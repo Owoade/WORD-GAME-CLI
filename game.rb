@@ -1,3 +1,5 @@
+$score = 0;
+
 def acquaintance
   difficulty_list = ["easy, medium, hard"];
   puts "Hello! whats your name?"
@@ -14,24 +16,46 @@ def acquaintance
   return { :name => name, :difficulty => difficulty }
 end
 
-# acquaintance()
 
 def get_word
   lines = File.readlines("words.txt")
-  return lines[rand(lines.length)]
+  return lines[rand(lines.length)].chomp()
+
+  rescue
+  return lines[rand(lines.length)].chomp()
 end
 
-def hash_word( word )
+def generate_word
+  word = get_word();
   return word if word.length < 3
+  hashed_word = "";
 
-  hashed_word = ""
   word.length.times do | index |
     char = word[index];
     hashed_word += index % 2 != 0 ? "_" : char;
   end
 
-  return hashed_word
+  return { :hashed_word => hashed_word, :word => word }
 
 end
 
-puts hash_word("magret")
+
+def gameplay
+  word_hash = generate_word();
+  puts word_hash[:word];
+  puts "Unscrable the word: #{ word_hash[:hashed_word] }";
+  user_input = gets.chomp();
+
+  if user_input === word_hash[:word]
+    puts "Great! you got it right";
+    $score += 1;
+    puts "Score: #{ $score }"
+    return gameplay()
+  end
+
+  puts "Gameover('_') you got it wrong";
+  puts "Score: #{ $score }"
+  return
+end
+
+gameplay()
